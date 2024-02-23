@@ -24,7 +24,7 @@ userRouter.put("/protected/editarPerfil/:id", protectWithJWT, upload.single("ava
 userRouter.put("/protected/cambiarContraseña", protectWithJWT, userController.changeUserPassword);
 userRouter.get("/detalle/:id", userController.getUserDetail);
 userRouter.get("/protected/:id", protectWithJWT, userController.getUserById);
-userRouter.get("/protected/blogsCreados/:id", protectWithJWT, userController.getUserBlogs);
+userRouter.get("/protected/blogsCreados/:userId", protectWithJWT, userController.getUserBlogs);
 userRouter.get("/protected/logout/:id", protectWithJWT, userController.logout);
 
 export default userRouter;

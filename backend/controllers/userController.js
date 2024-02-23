@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import { jwtSecret } from "../config/config.js";
 import passport from "passport";
@@ -106,17 +107,17 @@ const userController = {
     },
 
     getUserBlogs: async (req, res) => {
-        const userId = req.params.id;
-
+        const userId = req.params.userId; 
+    
         try {
             const user = await User.findById(userId).exec();
-
+    
             if (!user) {
                 return res.status(404).json({ error: "Usuario no encontrado" });
             }
-
-            const userBlogs = await Blog.find({ user: userId }).exec();
-
+    
+            const userBlogs = await Blog.find({ user: userId }).exec(); 
+    
             return res.json({
                 user: {
                     _id: user._id,
@@ -128,10 +129,10 @@ const userController = {
                 createdBlogs: userBlogs,
             });
         } catch (err) {
-            console.error("Error al obtener los productos del usuario:", err);
+            console.error("Error al obtener los blogs del usuario:", err);
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });
         }
-    },
+    },    
 
     editUserProfile: async (req, res) => {
         const userId = req.params.id;

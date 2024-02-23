@@ -1,0 +1,91 @@
+/* === Ajustes generales === */
+body,
+html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70vh;
+}
+
+.button-link-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+/* === Menu ===*/
+.avatar {
+    width: 35px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+/* === Home ===*/
+.home-container {
+    padding: 40px 0;
+}
+
+.cta-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.cta-buttons a {
+    flex: 1;
+    margin-right: 10px;
+}
+
+/* === Usuario === */
+.user-card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40vh;
+}
+
+.user-card {
+    width: 18rem;
+}
+
+.user-card .user-avatar {
+    width: 40px;
+    height: 30px;
+}
+
+.created-blogs-container {
+    margin-top: 5rem;
+    text-align: center;
+}
+
+/* === Footer === */
+.footer-container {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: #333;
+}
+
+.footer-links a:hover {
+    color: #007bff;
+}

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 // Define modelo de blogs
 const blogSchema = new mongoose.Schema({
     title: String,
+    category: String,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User', 

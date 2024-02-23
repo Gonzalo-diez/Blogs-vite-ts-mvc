@@ -21,6 +21,7 @@ const upload = multer({ storage: storage });
 blogRouter.get("/", blogController.getAllBlogs);
 blogRouter.get("/:id", blogController.getBlogByDetail);
 blogRouter.get("/comentarios/:id", blogController.getCommentsByBlog);
+blogRouter.get("/categoria/:category", blogController.getBlogByCategory);
 blogRouter.post("/protected/agregarBlog", protectWithJWT, upload.single("image"), blogController.addBlog);
 blogRouter.put("/protected/editarBlog/:id", protectWithJWT, upload.single("image"), blogController.updateBlog);
 blogRouter.delete("/protected/borrarBlog/:id", protectWithJWT, blogController.deleteBlog);
