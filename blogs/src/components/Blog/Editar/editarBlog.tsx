@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
-import { useAuth } from "../Context/authContext";
+import { useAuth } from "../../Context/authContext";
 
 interface Blog {
     _id: string;

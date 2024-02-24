@@ -21,7 +21,7 @@ const upload = multer({ storage: storage });
 userRouter.post("/registro", upload.single("avatar"), userController.register);
 userRouter.post("/login", userController.login);
 userRouter.put("/protected/editarPerfil/:id", protectWithJWT, upload.single("avatar"), userController.editUserProfile);
-userRouter.put("/protected/cambiarContraseña", protectWithJWT, userController.changeUserPassword);
+userRouter.put("/protected/cambiarContrasena/:userId", protectWithJWT, userController.changeUserPassword);
 userRouter.get("/detalle/:id", userController.getUserDetail);
 userRouter.get("/protected/:id", protectWithJWT, userController.getUserById);
 userRouter.get("/protected/blogsCreados/:userId", protectWithJWT, userController.getUserBlogs);
