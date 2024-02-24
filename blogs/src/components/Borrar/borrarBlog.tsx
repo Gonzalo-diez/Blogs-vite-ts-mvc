@@ -30,7 +30,7 @@ const BorrarBlog: React.FC<Props> = ({ isAuthenticated }) => {
     const fetchDetalleBlog = async () => {
       try {
         const { data: datosBlog } = await axios.get<Blog>(
-          `http://localhost:8800/blogs/detalle/${id}`
+          `http://localhost:8800/blogs/${id}`
         );
         setBlog(datosBlog);
       } catch (error) {
@@ -48,7 +48,7 @@ const BorrarBlog: React.FC<Props> = ({ isAuthenticated }) => {
     try {
       const token = localStorage.getItem("jwtToken");
 
-      await axios.delete(`http://localhost:8800/productos/protected/borrarBlog/${id}`, {
+      await axios.delete(`http://localhost:8800/blogs/protected/borrarBlog/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
