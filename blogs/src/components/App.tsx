@@ -10,6 +10,8 @@ import Login from './Login/login';
 import Registro from './Registro/registro';
 import User from './User/user';
 import AgregarBlog from './Agregar/agregarBlog';
+import EditarBlog from './Editar/editarBlog';
+import BorrarBlog from './Borrar/borrarBlog';
 
 function App() {
   const [user, setUser] = useState(null)
@@ -23,6 +25,8 @@ function App() {
           <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
           <Route path='/blogs/:id' element={<Blog />} />
           <Route path='/blogs/protected/agregarBlog' element={<AgregarBlog isAuthenticated={isAuthenticated} user={user} />} />
+          <Route path='/blogs/protected/editarBlog/:id' element={<EditarBlog isAuthenticated={isAuthenticated} />} />
+          <Route path='/blogs/protected/borrarBlog/:id' element={<BorrarBlog isAuthenticated={isAuthenticated} />} />
           <Route path='/usuarios/login' element={<Login setIsAuthenticated={setIsAuthenticated} />} />
           <Route path='/usuarios/registro' element={<Registro setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
           <Route path='/usuarios/protected/:id' element={<User setUser={setUser} user={user} isAuthenticated={isAuthenticated} />} />

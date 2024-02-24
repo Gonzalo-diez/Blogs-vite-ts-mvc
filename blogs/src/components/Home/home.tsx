@@ -105,7 +105,7 @@ const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
                                 <Button variant="primary" onClick={() => navigate(`/blogs/${blog._id}`)}>Ver más</Button>
                                 {isAuthenticated && userId && userId === blog.user._id && (
                                     <div className="inicio-link-container">
-                                        <Button variant="warning" onClick={() => navigate(`/productos/protected/editar/${blog._id}`)}><IoPencil /></Button>
+                                        <Button variant="warning" onClick={() => navigate(`/blogs/protected/editarBlog/${blog._id}`)}><IoPencil /></Button>
                                         <Button variant="danger" onClick={() => handleEliminarBlog(blog._id)}><IoTrash /></Button>
                                     </div>
                                 )}
