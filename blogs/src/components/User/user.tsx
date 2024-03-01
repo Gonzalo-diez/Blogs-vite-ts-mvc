@@ -129,7 +129,6 @@ const User: React.FC<UserProps> = ({ isAuthenticated, user, setUser }) => {
                         <h3>Blogs Creados:</h3>
                         {blogs && blogs.createdBlogs && blogs.createdBlogs.length > 0 ? (
                             <div>
-                                <h4>Los blogs que has creado son:</h4>
                                 {blogs.createdBlogs.map((blog) => (
                                     <div key={blog._id}>
                                         <h2>{blog.title}</h2>

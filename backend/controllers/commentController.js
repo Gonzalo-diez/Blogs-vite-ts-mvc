@@ -4,18 +4,6 @@ import User from "../models/user.js";
 import Comment from "../models/comment.js";
 
 const commentController = {
-    getRatings: async (req, res, next) => {
-        const { rating } = req.body;
-
-        try {
-            const ratings = await Comment.find(rating);
-            return res.json(ratings);
-        } catch (err) {
-            console.error('Error:', err);
-            return res.status(500).json({ error: "Error en la base de datos", details: err.message });
-        }
-    },
-
     getCommentById: async (req, res) => {
         const commentId = req.params.id;
 
@@ -33,7 +21,7 @@ const commentController = {
     },
 
     addComment: async (req, res) => {
-        const { text, rating, userId, blogId, name } = req.body;
+        const { text, userId, blogId, name } = req.body;
     
         try {
             const blog = await Blog.findById(blogId).exec();
@@ -44,7 +32,6 @@ const commentController = {
 
             const newComment = new Comment({
                 text,
-                rating,
                 user: userId,
                 blog: blogId,
                 name,
@@ -61,7 +48,7 @@ const commentController = {
 
     editComment: async (req, res) => {
         const commentId = req.params.id;
-        const { text, rating, userId } = req.body;
+        const { text, userId } = req.body;
 
         try {
             const user = await User.findById(userId).exec();
@@ -82,7 +69,7 @@ const commentController = {
 
             const updatedComment = await Comment.findByIdAndUpdate(
                 commentId,
-                { text, rating, user: userId },
+                { text, user: userId },
                 { new: true }
             );
 
