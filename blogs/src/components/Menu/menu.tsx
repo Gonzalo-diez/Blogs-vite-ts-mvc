@@ -47,7 +47,7 @@ const Menu: React.FC<MenuProps> = ({ isAuthenticated, user }) => {
     return (
         <Navbar expand="lg" className="bg-body-tertiary mb-0">
             <Container>
-                <Navbar.Brand as={Link} to="/">Mercado</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/">Blogs</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     {isAuthenticated && token ? (

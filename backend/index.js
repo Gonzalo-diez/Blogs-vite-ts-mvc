@@ -13,7 +13,7 @@ import routes from "./routes.js";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
+export const io = new Server(server, {
     cors: {
         origin: "http://localhost:5173", 
         methods: ["GET", "POST", "DELETE"] 
@@ -57,14 +57,6 @@ configurePassport(passport);
 app.use("/", routes);
 app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, 'avatar')));
-
-io.on("connection", (socket) => {
-    console.log("Nuevo cliente se ha conectado");
-
-    socket.on("comentario-agregado", (comentario) => {
-        io.emit("actualizar-comentarios", comentario);
-    }); 
-});
 
 const PORT = 8800
 

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Blog from "../models/blog.js";
 import User from "../models/user.js";
 import Comment from "../models/comment.js";
+import { io } from "../index.js";
 
 const commentController = {
     getCommentById: async (req, res) => {
@@ -38,6 +39,8 @@ const commentController = {
             });
     
             await newComment.save();
+
+            io.emit("comentario-agregado", newComment);
     
             return res.json('Comentario agregado');
         } catch (err) {
@@ -77,6 +80,8 @@ const commentController = {
                 return res.status(404).json({ error: 'Comentario no encontrado' });
             }
 
+            io.emit("comentario-editado", updatedComment);
+
             return res.json('Comentario actualizado');
         } catch (err) {
             console.error('Error en la actualización del comentario:', err);
@@ -93,6 +98,8 @@ const commentController = {
             if (result.deletedCount === 0) {
                 return res.status(404).json({ error: 'Comentario no encontrado' });
             }
+
+            io.emit("comentario-eliminado", commentId);
 
             return res.json('Comentario eliminado');
         } catch (err) {

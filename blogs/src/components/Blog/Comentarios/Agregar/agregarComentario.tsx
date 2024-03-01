@@ -3,22 +3,26 @@ import { Button, Form, Toast } from 'react-bootstrap';
 import { BiSolidCommentAdd } from 'react-icons/bi';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { Socket } from 'socket.io-client';
 import { useAuth } from '../../../Context/authContext';
 
 interface AgregarComentarioProps {
     isAuthenticated: boolean;
     userId: string | null;
     blogId: string | null;
+    socket: Socket;
 }
 
 const AgregarComentario: React.FC<AgregarComentarioProps> = ({
     isAuthenticated,
+    socket,
 }) => {
     const { userId } = useAuth();
     const { id } = useParams<{ id: string }>();
     const [userName, setUserName] = useState('');
     const [newComment, setNewComment] = useState('');
     const [showToastComentario, setShowToastComentario] = useState(false);
+    const [showForm, setShowForm] = useState(true);
 
     const handleNombreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUserName(event.target.value);
@@ -37,14 +41,14 @@ const AgregarComentario: React.FC<AgregarComentarioProps> = ({
                     return;
                 }
     
-                const comentarioData = {
+                const nuevoComentario = {
                     text: newComment,
                     userId: userId,
                     blogId: id,
                     name: userName,
                 };
     
-                const response = await axios.post(`http://localhost:8800/comentarios/protected/agregarComentario`, comentarioData, {
+                const response = await axios.post(`http://localhost:8800/comentarios/protected/agregarComentario`, nuevoComentario, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -54,6 +58,10 @@ const AgregarComentario: React.FC<AgregarComentarioProps> = ({
                     setNewComment("");
                     setShowToastComentario(true);
                 }
+
+                socket.emit("comentario-agregado", nuevoComentario);
+
+                setShowForm(false); 
             } catch (err) {
                 console.error('Error al agregar el comentario:', err);
             }
@@ -64,7 +72,7 @@ const AgregarComentario: React.FC<AgregarComentarioProps> = ({
 
     return (
         <div className="nuevo-comentario">
-            {isAuthenticated && (
+            {isAuthenticated && showForm && (
                 <Form>
                     <Form.Group controlId="nombre">
                         <Form.Label>Tu Nombre:</Form.Label>

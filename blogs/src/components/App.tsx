@@ -14,12 +14,15 @@ import EditarPerfil from './User/Editar/editarPerfil';
 import EditarPassword from './User/Editar/editarPassword';
 import BlogCategoria from './Blog/Categoria/blogCategoria';
 import EditarComentario from './Blog/Comentarios/Editar/editarComentario';
+import io from "socket.io-client";
 import './css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [user, setUser] = useState(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const socket = io("http://localhost:8800");
 
   return (
     <>
@@ -32,7 +35,7 @@ function App() {
           <Route path='/blogs/protected/agregarBlog' element={<AgregarBlog isAuthenticated={isAuthenticated} user={user} />} />
           <Route path='/blogs/protected/editarBlog/:id' element={<EditarBlog isAuthenticated={isAuthenticated} />} />
           <Route path='/blogs/protected/borrarBlog/:id' element={<BorrarBlog isAuthenticated={isAuthenticated} />} />
-          <Route path='/comentarios/protected/editarComentario/:id' element={<EditarComentario />} />
+          <Route path='/comentarios/protected/editarComentario/:id' element={<EditarComentario socket={socket} />} />
           <Route path='/usuarios/login' element={<Login setIsAuthenticated={setIsAuthenticated} />} />
           <Route path='/usuarios/registro' element={<Registro setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
           <Route path='/usuarios/protected/:id' element={<User setUser={setUser} user={user} isAuthenticated={isAuthenticated} />} />

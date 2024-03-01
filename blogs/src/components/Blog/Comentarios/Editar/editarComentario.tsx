@@ -3,10 +3,13 @@ import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useAuth } from '../../../Context/authContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
 
-interface EditarComentarioProps {}
+interface EditarComentarioProps {
+    socket: Socket;
+}
 
-const EditarComentario: React.FC<EditarComentarioProps> = () => {
+const EditarComentario: React.FC<EditarComentarioProps> = ({ socket }) => {
     const { id } = useParams();
     const { userId } = useAuth();
     const navigate = useNavigate();
@@ -60,6 +63,7 @@ const EditarComentario: React.FC<EditarComentarioProps> = () => {
             console.log('Datos a enviar', response.data);
             setNewComment('');
             navigate('/');
+            socket.emit('comentario-editado', response.data); 
         } catch (error) {
             console.error('Error al actualizar el comentario:', error);
         }

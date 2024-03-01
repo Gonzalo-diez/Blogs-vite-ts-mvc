@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Button, Pagination } from 'react-bootstrap';
 import { IoPencil, IoTrash } from 'react-icons/io5';
 import AgregarComentario from './Agregar/agregarComentario';
-import io from "socket.io-client";
+import { Socket } from 'socket.io-client';
 
 interface Comment {
     _id: string;
@@ -20,6 +20,7 @@ interface ComentarioProps {
     blogId: string | null;
     handleEliminarComentario: (commentId: string) => void;
     navigate: (path: string) => void;
+    socket: Socket;
 }
 
 const Comentario: React.FC<ComentarioProps> = ({
@@ -28,6 +29,7 @@ const Comentario: React.FC<ComentarioProps> = ({
     handleEliminarComentario,
     navigate,
     blogId,
+    socket,
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [comments, setComments] = useState<Comment[]>([]);
@@ -35,8 +37,6 @@ const Comentario: React.FC<ComentarioProps> = ({
     const startIndex = (currentPage - 1) * COMMENTS_PER_PAGE;
     const endIndex = startIndex + COMMENTS_PER_PAGE;
     const displayedComments = comments.slice(startIndex, endIndex);
-
-    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -47,14 +47,22 @@ const Comentario: React.FC<ComentarioProps> = ({
                 console.error('Error al obtener comentarios:', err);
             }
         };
-
-        fetchComments();
-
-        socket.on('comentario-agregado', (nuevoComentario: Comment) => {
+    
+        socket.on('actualizar-comentarios', (nuevoComentario: Comment) => {
             if (nuevoComentario.blog === blogId) {
                 setComments(prevComments => [...prevComments, nuevoComentario]);
             }
         });
+
+        socket.on('actualizar-comentario-eliminado', (deletedCommentId: string) => {
+            setComments(prevComments => prevComments.filter(comment => comment._id !== deletedCommentId));
+        });
+    
+        fetchComments();
+    
+        return () => {
+            socket.disconnect(); 
+        };
     }, [blogId]);
 
     const handlePageChange = (page: number) => {
@@ -107,6 +115,7 @@ const Comentario: React.FC<ComentarioProps> = ({
                     isAuthenticated={isAuthenticated}
                     userId={userId}
                     blogId={blogId}
+                    socket={socket}
                 />
             )}
         </div>
