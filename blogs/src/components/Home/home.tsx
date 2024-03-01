@@ -91,7 +91,7 @@ const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
                 </Container>
             </main>
             <Container>
-                <h1>Blog Posts</h1>
+                <h1 className="text-center">Blog Posts</h1>
                 <Row>
                     {blogs.map(blog => (
                         <Col key={blog._id} xs={12} md={6} lg={4}>
@@ -102,13 +102,15 @@ const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
                                     <Card.Subtitle>{blog.category}</Card.Subtitle>
                                     <Card.Text>{blog.text}</Card.Text>
                                 </Card.Body>
-                                <Button variant="primary" onClick={() => navigate(`/blogs/${blog._id}`)}>Ver más</Button>
-                                {isAuthenticated && userId && userId === blog.user._id && (
-                                    <div className="inicio-link-container">
-                                        <Button variant="warning" onClick={() => navigate(`/blogs/protected/editarBlog/${blog._id}`)}><IoPencil /></Button>
-                                        <Button variant="danger" onClick={() => handleEliminarBlog(blog._id)}><IoTrash /></Button>
-                                    </div>
-                                )}
+                                <div className="d-flex justify-content-between">
+                                    <Button variant="primary" onClick={() => navigate(`/blogs/${blog._id}`)}>Ver más</Button>
+                                    {isAuthenticated && userId && userId === blog.user._id && (
+                                        <div className="inicio-link-container">
+                                            <Button variant="warning" onClick={() => navigate(`/blogs/protected/editarBlog/${blog._id}`)} className="mx-2"><IoPencil /></Button>
+                                            <Button variant="danger" onClick={() => handleEliminarBlog(blog._id)} className="mx-2"><IoTrash /></Button>
+                                        </div>
+                                    )}
+                                </div>
                             </Card>
                         </Col>
                     ))}

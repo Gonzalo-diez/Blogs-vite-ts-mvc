@@ -21,6 +21,12 @@
     margin-right: 10px;
 }
 
+/* === Detalles del blog === */
+.blog-details-container {
+    width: 40rem;
+    height: 100%;
+}
+
 /* === Usuario === */
 .user-card-container {
     display: flex;
@@ -41,6 +47,17 @@
 .created-blogs-container {
     margin-top: 5rem;
     text-align: center;
+}
+
+.created-blogs-card {
+    width: 20rem;
+    height: 100%;
+}
+
+.created-blogs-image {
+    max-height: 200px;
+    aspect-ratio: 3/2;
+    object-fit: contain;
 }
 
 /* === Footer === */

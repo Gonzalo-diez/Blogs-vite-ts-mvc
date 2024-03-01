@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
+import { IoTrash, IoPencil } from "react-icons/io5";
 import { useAuth } from "../Context/authContext";
 
 interface User {
@@ -127,19 +128,29 @@ const User: React.FC<UserProps> = ({ isAuthenticated, user, setUser }) => {
 
                     <div className="created-blogs-container">
                         <h3>Blogs Creados:</h3>
-                        {blogs && blogs.createdBlogs && blogs.createdBlogs.length > 0 ? (
-                            <div>
-                                {blogs.createdBlogs.map((blog) => (
-                                    <div key={blog._id}>
-                                        <h2>{blog.title}</h2>
-                                        <p>{blog.category}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p>No has creado ni un blog aún.</p>
-                        )}
-
+                        <div className="blogs-grid">
+                            {blogs && blogs.createdBlogs && blogs.createdBlogs.length > 0 ? (
+                                blogs.createdBlogs.map((blog) => (
+                                    <Card key={blog._id} className="created-blogs-card">
+                                        <Card.Body>
+                                            <Card.Title>{blog.title}</Card.Title>
+                                            <Card.Text>{blog.text}</Card.Text>
+                                        </Card.Body>
+                                        <Card.Img src={`http://localhost:8800/${blog.image}`} alt={blog.title} className="created-blogs-image" />
+                                        <div className="d-flex justify-content-center mt-3">
+                                            <Button onClick={() => navigate(`/blogs/${blog._id}`)}>Ver blog</Button>
+                                            <Button variant="warning" className="mx-2" onClick={() => navigate(`/blogs/protected/editarBlog/${blog._id}`)}><IoPencil /></Button>
+                                            <Button variant="danger" className="mx-2" onClick={() => navigate(`/blogs/protected/borrarBlog/${blog._id}`)}><IoTrash /></Button>
+                                        </div>
+                                        <Card.Footer>
+                                            <small className="text-muted">{blog.category}</small>
+                                        </Card.Footer>
+                                    </Card>
+                                ))
+                            ) : (
+                                <p>No has creado ningún blog aún.</p>
+                            )}
+                        </div>
                     </div>
                 </div>
             ) : (

@@ -75,9 +75,9 @@ const Blog: React.FC<BlogProps> = ({ isAuthenticated }) => {
 
     return (
         <Container>
-            <h1>Blog Details</h1>
+            <h1 className="text-center">Blog Details</h1>
             {blog && (
-                <Card>
+                <Card className="blog-details-container mx-auto">
                     <Card.Img variant="top" src={`http://localhost:8800/${blog.image}`} alt={blog.title} />
                     <Card.Body>
                         <Card.Title>{blog.title}</Card.Title>
