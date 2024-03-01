@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Button, Pagination } from 'react-bootstrap';
 import { IoPencil, IoTrash } from 'react-icons/io5';
 import AgregarComentario from './Agregar/agregarComentario';
+import io from "socket.io-client";
 
 interface Comment {
     _id: string;
@@ -13,7 +15,6 @@ interface Comment {
 }
 
 interface ComentarioProps {
-    comments: Comment[];
     isAuthenticated: boolean;
     userId: string | null;
     blogId: string | null;
@@ -22,7 +23,6 @@ interface ComentarioProps {
 }
 
 const Comentario: React.FC<ComentarioProps> = ({
-    comments,
     isAuthenticated,
     userId,
     handleEliminarComentario,
@@ -30,10 +30,32 @@ const Comentario: React.FC<ComentarioProps> = ({
     blogId,
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [comments, setComments] = useState<Comment[]>([]);
     const COMMENTS_PER_PAGE = 3;
     const startIndex = (currentPage - 1) * COMMENTS_PER_PAGE;
     const endIndex = startIndex + COMMENTS_PER_PAGE;
     const displayedComments = comments.slice(startIndex, endIndex);
+
+    const socket = io("http://localhost:8800");
+
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const comentariosRes = await axios.get(`http://localhost:8800/blogs/comentarios/${blogId}`);
+                setComments(comentariosRes.data);
+            } catch (err) {
+                console.error('Error al obtener comentarios:', err);
+            }
+        };
+
+        fetchComments();
+
+        socket.on('comentario-agregado', (nuevoComentario: Comment) => {
+            if (nuevoComentario.blog === blogId) {
+                setComments(prevComments => [...prevComments, nuevoComentario]);
+            }
+        });
+    }, [blogId]);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -84,7 +106,7 @@ const Comentario: React.FC<ComentarioProps> = ({
                 <AgregarComentario
                     isAuthenticated={isAuthenticated}
                     userId={userId}
-                    blogId={blogId} 
+                    blogId={blogId}
                 />
             )}
         </div>

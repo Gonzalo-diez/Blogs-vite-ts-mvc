@@ -45,9 +45,6 @@ const Blog: React.FC<BlogProps> = ({ isAuthenticated }) => {
             try {
                 const blogRes = await axios.get<Blog>(`http://localhost:8800/blogs/${id}`);
                 setBlog(blogRes.data);
-
-                const comentariosRes = await axios.get<Comment[]>(`http://localhost:8800/blogs/comentarios/${id}`);
-                setComments(comentariosRes.data);
             }
             catch (error) {
                 console.error('Error fetching data:', error);
@@ -87,7 +84,6 @@ const Blog: React.FC<BlogProps> = ({ isAuthenticated }) => {
                 </Card>
             )}
             <Comentario
-                comments={comments}
                 isAuthenticated={isAuthenticated}
                 userId={userId}
                 blogId={id}

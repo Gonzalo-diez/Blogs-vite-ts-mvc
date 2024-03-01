@@ -18,8 +18,6 @@ const AgregarComentario: React.FC<AgregarComentarioProps> = ({
     const { id } = useParams<{ id: string }>();
     const [userName, setUserName] = useState('');
     const [newComment, setNewComment] = useState('');
-    const [comments, setComments] = useState([]);
-    const [hasCommented, setHasCommented] = useState(false);
     const [showToastComentario, setShowToastComentario] = useState(false);
 
     const handleNombreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,11 +51,8 @@ const AgregarComentario: React.FC<AgregarComentarioProps> = ({
                 });
     
                 if (response.status === 200) {
-                    const comentariosRes = await axios.get(`http://localhost:8800/blogs/comentarios/${id}`);
-                    setComments(comentariosRes.data);
                     setNewComment("");
                     setShowToastComentario(true);
-                    setHasCommented(true);
                 }
             } catch (err) {
                 console.error('Error al agregar el comentario:', err);
