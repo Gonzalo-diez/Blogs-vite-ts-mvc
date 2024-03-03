@@ -20,7 +20,7 @@ const EditarComentario: React.FC<EditarComentarioProps> = ({ socket }) => {
     useEffect(() => {
         const fetchComentario = async () => {
             try {
-                const response = await axios.get<{ text: string; rating: number }>(
+                const response = await axios.get<{ text: string; }>(
                     `http://localhost:8800/comentarios/${id}`,
                     {
                         headers: {
@@ -63,7 +63,7 @@ const EditarComentario: React.FC<EditarComentarioProps> = ({ socket }) => {
             console.log('Datos a enviar', response.data);
             setNewComment('');
             navigate('/');
-            socket.emit('comentario-editado', response.data); 
+            socket.emit("comentario-editado", response);
         } catch (error) {
             console.error('Error al actualizar el comentario:', error);
         }

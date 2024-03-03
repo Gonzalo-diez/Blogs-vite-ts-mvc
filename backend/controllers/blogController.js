@@ -153,9 +153,9 @@ const blogController = {
         const blogId = req.params.id;
 
         try {
-            const result = await Blog.deleteOne({ _id: blogId });
+            const deleteBlog = await Blog.deleteOne({ _id: blogId });
 
-            if (result.deletedCount === 0) {
+            if (deleteBlog.deletedCount === 0) {
                 return res.status(404).json({ error: "Blog no encontrado" });
             }
 

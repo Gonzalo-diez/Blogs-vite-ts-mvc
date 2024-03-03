@@ -1,28 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Form, Toast } from 'react-bootstrap';
 import { BiSolidCommentAdd } from 'react-icons/bi';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Socket } from 'socket.io-client';
+import io from "socket.io-client";
 import { useAuth } from '../../../Context/authContext';
+
+interface Comment {
+    _id: string;
+    text: string;
+    user: string;
+    blog: string;
+    name?: string;
+    date: string;
+}
 
 interface AgregarComentarioProps {
     isAuthenticated: boolean;
     userId: string | null;
     blogId: string | null;
-    socket: Socket;
 }
 
 const AgregarComentario: React.FC<AgregarComentarioProps> = ({
     isAuthenticated,
-    socket,
+    blogId,
 }) => {
     const { userId } = useAuth();
     const { id } = useParams<{ id: string }>();
+    const [comments, setComments] = useState<Comment[]>([]);
     const [userName, setUserName] = useState('');
     const [newComment, setNewComment] = useState('');
     const [showToastComentario, setShowToastComentario] = useState(false);
     const [showForm, setShowForm] = useState(true);
+
+    const socket = io("http://localhost:8800");
+
+    useEffect(() => {
+        socket.on('comentario-agregado', (newComment: Comment) => {
+            if (newComment.blog === blogId) {
+                console.log('Nuevo comentario agregado:', newComment);
+                setComments(prevComments => [...prevComments, newComment]);
+            }
+        });
+    })
 
     const handleNombreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUserName(event.target.value);

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Button, Pagination } from 'react-bootstrap';
 import { IoPencil, IoTrash } from 'react-icons/io5';
 import AgregarComentario from './Agregar/agregarComentario';
-import { Socket } from 'socket.io-client';
+import io from "socket.io-client";
 
 interface Comment {
     _id: string;
@@ -18,18 +18,14 @@ interface ComentarioProps {
     isAuthenticated: boolean;
     userId: string | null;
     blogId: string | null;
-    handleEliminarComentario: (commentId: string) => void;
     navigate: (path: string) => void;
-    socket: Socket;
 }
 
 const Comentario: React.FC<ComentarioProps> = ({
     isAuthenticated,
     userId,
-    handleEliminarComentario,
     navigate,
     blogId,
-    socket,
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [comments, setComments] = useState<Comment[]>([]);
@@ -37,6 +33,8 @@ const Comentario: React.FC<ComentarioProps> = ({
     const startIndex = (currentPage - 1) * COMMENTS_PER_PAGE;
     const endIndex = startIndex + COMMENTS_PER_PAGE;
     const displayedComments = comments.slice(startIndex, endIndex);
+
+    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -47,23 +45,54 @@ const Comentario: React.FC<ComentarioProps> = ({
                 console.error('Error al obtener comentarios:', err);
             }
         };
+
+        socket.on("connection", () => {
+            console.log("Conexión establecida con el servidor de sockets");
+        });
+
+        socket.on('comentario-agregado', (newComment: Comment) => {
+            if (newComment.blog === blogId) {
+                console.log('Nuevo comentario agregado:', newComment);
+                setComments(prevComments => [...prevComments, newComment]);
+            }
+        });
     
-        socket.on('actualizar-comentarios', (nuevoComentario: Comment) => {
+        socket.on('comentario-editado', (nuevoComentario: Comment) => {
             if (nuevoComentario.blog === blogId) {
+                console.log('Comentario actualizado:', nuevoComentario);
                 setComments(prevComments => [...prevComments, nuevoComentario]);
             }
         });
-
-        socket.on('actualizar-comentario-eliminado', (deletedCommentId: string) => {
+    
+        socket.on('comentario-eliminado', (deletedCommentId: string) => {
+            console.log('Comentario eliminado:', deletedCommentId);
             setComments(prevComments => prevComments.filter(comment => comment._id !== deletedCommentId));
-        });
-    
+        });        
+        
         fetchComments();
-    
+
         return () => {
             socket.disconnect(); 
         };
     }, [blogId]);
+
+    const handleEliminarComentario = async (commentId: string) => {
+        try {
+            const token = localStorage.getItem("jwtToken");
+
+            await axios.delete(`http://localhost:8800/comentarios/protected/borrarComentario/${commentId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            socket.emit("comentario-eliminado", commentId);
+
+            setComments(prevComments => prevComments.filter(comment => comment._id !== commentId));
+        } catch (error) {
+            console.error("Error al eliminar comentario:", error);
+        }
+    };
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -115,7 +144,6 @@ const Comentario: React.FC<ComentarioProps> = ({
                     isAuthenticated={isAuthenticated}
                     userId={userId}
                     blogId={blogId}
-                    socket={socket}
                 />
             )}
         </div>

@@ -4,7 +4,6 @@ import axios from "axios";
 import { Container, Card } from 'react-bootstrap';
 import { useAuth } from "../Context/authContext";
 import Comentario from "./Comentarios/comentarios";
-import io from "socket.io-client";
 
 interface Blog {
     _id: string;
@@ -20,28 +19,16 @@ interface Blog {
     };
 }
 
-interface Comment {
-    _id: string;
-    text: string;
-    user: string;
-    blog: string;
-    name?: string;
-    date: string;
-}
-
 interface BlogProps {
     isAuthenticated: boolean;
 }
 
 const Blog: React.FC<BlogProps> = ({ isAuthenticated }) => {
     const [blog, setBlog] = useState<Blog | null>(null);
-    const [comments, setComments] = useState<Comment[]>([]);
     const params = useParams<{ id: string }>();
     const id = params.id || null;
     const { userId } = useAuth();
     const navigate = useNavigate();
-
-    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchBlog = async () => {
@@ -56,22 +43,6 @@ const Blog: React.FC<BlogProps> = ({ isAuthenticated }) => {
 
         fetchBlog();
     }, [id]);
-
-    const handleEliminarComentario = async (commentId: string) => {
-        try {
-            const token = localStorage.getItem("jwtToken");
-
-            await axios.delete(`http://localhost:8800/comentarios/protected/borrarComentario/${commentId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            setComments(prevComments => prevComments.filter(comment => comment._id !== commentId));
-        } catch (error) {
-            console.error("Error al eliminar comentario:", error);
-        }
-    };
 
     return (
         <Container>
@@ -90,8 +61,6 @@ const Blog: React.FC<BlogProps> = ({ isAuthenticated }) => {
                 isAuthenticated={isAuthenticated}
                 userId={userId}
                 blogId={id}
-                socket={socket}
-                handleEliminarComentario={handleEliminarComentario}
                 navigate={navigate}
             />
         </Container>
