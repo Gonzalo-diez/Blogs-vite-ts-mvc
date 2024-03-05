@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
+import  io from "socket.io-client";
 import { useAuth } from "../../Context/authContext";
 
 interface Blog {
@@ -33,6 +34,7 @@ const EditarBlog: React.FC<Props> = ({ isAuthenticated }) => {
     const [image, setImage] = useState<File | null>(null);
 
     const token = localStorage.getItem("jwtToken");
+    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchBlog = async () => {
@@ -76,7 +78,7 @@ const EditarBlog: React.FC<Props> = ({ isAuthenticated }) => {
                 formData.append("userId", userId);
             }
 
-            await axios.put(
+            const response = await axios.put(
                 `http://localhost:8800/blogs/protected/editarBlog/${id}`,
                 formData,
                 {
@@ -87,7 +89,8 @@ const EditarBlog: React.FC<Props> = ({ isAuthenticated }) => {
                 }
             );
 
-            console.log("Blog actualizado correctamente");
+            console.log("Blog actualizado correctamente:", response);
+            socket.emit("blog-editado", response);
             navigate("/");
         } catch (error) {
             console.error("Error en la actualización:", error);

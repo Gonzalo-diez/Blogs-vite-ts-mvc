@@ -87,4 +87,19 @@ io.on("connection", (socket) => {
         console.log("Comentario editado:", updatedComment);
         io.emit("comentario-editado", updatedComment);
     });
+
+    socket.on("blog-eliminado", (deleteBlogId) => {
+        console.log("Blog eliminado:", deleteBlogId);
+        io.emit("blog-eliminado", deleteBlogId);
+    });
+
+    socket.on("blog-editado", (updatedBlog) => {
+        console.log("Blog editado:", updatedBlog);
+        io.emit("blog-editado", updatedBlog);
+    });
+
+    socket.on("blog-agregado", (newBlog) => {
+        console.log("Blog agregado:", newBlog);
+        io.emit("blog-agregado", newBlog);
+    });
 })

@@ -63,6 +63,11 @@ const Comentario: React.FC<ComentarioProps> = ({
             setComments(prevComments => prevComments.filter(comment => comment._id !== deletedCommentId));
         });
 
+        socket.on('comentario-editado', (updatedComment: Comment) => {
+            console.log('Comentario editado recibido:', updatedComment);
+            setComments(prevComments => [...prevComments, updatedComment]);
+        })
+
         socket.on('comentario-agregado', (newComment: Comment) => {
             console.log('Nuevo comentario agregado recibido:', newComment);
             setComments(prevComments => [...prevComments, newComment]);

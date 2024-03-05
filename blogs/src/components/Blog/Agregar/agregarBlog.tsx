@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
+import io from "socket.io-client";
 
 interface User {
   _id: string;
@@ -21,6 +22,7 @@ const AgregarBlog: React.FC<Props> = ({ isAuthenticated, user }) => {
 
   const userId = user ? user._id : null;
   const token = localStorage.getItem("jwtToken");
+  const socket = io("http://localhost:8800");
 
   const handleAgregar = async () => {
     if (!isAuthenticated) {
@@ -53,6 +55,7 @@ const AgregarBlog: React.FC<Props> = ({ isAuthenticated, user }) => {
       );
 
       console.log(response.data.message);
+      socket.emit("blog-agregado", response.data);
 
       navigate("/");
     } catch (error) {
@@ -109,7 +112,7 @@ const AgregarBlog: React.FC<Props> = ({ isAuthenticated, user }) => {
           onClick={handleAgregar}
           className="button-link-container"
         >
-          Agregar producto
+          Agregar blog
         </Button>
       </Form>
     </div>

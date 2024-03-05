@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Container, Card, Row, Col, Button } from 'react-bootstrap';
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../Context/authContext";
 import { IoTrash, IoPencil } from "react-icons/io5";
+import io from "socket.io-client";
+import { useAuth } from "../Context/authContext";
 
 interface Blog {
     _id: string;
@@ -29,6 +30,7 @@ const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
     const { userId } = useAuth();
 
     const token = localStorage.getItem("jwtToken");
+    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,6 +41,25 @@ const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
                 console.error('Error fetching data:', error);
             }
         };
+
+        socket.on("connect", () => {
+            console.log("Conexión establecida con el servidor de sockets");
+        });
+
+        socket.on('blog-eliminado', (deleteBlogId: string) => {
+            console.log('Blog eliminado recibido:', deleteBlogId);
+            setBlogs(prevBlogs => prevBlogs.filter(blog => blog._id !== deleteBlogId));
+        });
+
+        socket.on('blog-editado', (updatedBlog: Blog) => {
+            console.log('Blog editado recibido:', updatedBlog);
+            setBlogs(prevBlogs => [...prevBlogs, updatedBlog]);
+        });
+
+        socket.on('blog-agregado', (newBlog: Blog) => {
+            console.log('Nuevo blog agregado recibido:', newBlog);
+            setBlogs(prevBlogs => [...prevBlogs, newBlog]);
+        });
 
         fetchData();
     }, []);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Container, Button } from "react-bootstrap";
+import io from "socket.io-client";
 
 interface Blog {
     _id: string;
@@ -25,6 +26,8 @@ const BorrarBlog: React.FC<Props> = ({ isAuthenticated }) => {
   const [blog, setBlog] = useState<Blog | null>(null);
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const socket = io("http://localhost:8800");
 
   useEffect(() => {
     const fetchDetalleBlog = async () => {
@@ -53,6 +56,9 @@ const BorrarBlog: React.FC<Props> = ({ isAuthenticated }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      socket.emit("blog-eliminado", id)
+
       navigate("/", { replace: true });
     } catch (error) {
       console.error("Error al eliminar producto:", error);
