@@ -35,6 +35,7 @@ const commentController = {
                 user: userId,
                 blog: blogId,
                 name,
+                date: new Date(),
             });
     
             await newComment.save();
