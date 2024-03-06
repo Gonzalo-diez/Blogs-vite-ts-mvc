@@ -54,6 +54,19 @@ const Comentario: React.FC<ComentarioProps> = ({
             }
         };
 
+        const fetchUserDetails = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8800/usuarios/detalle/${userId}`);
+                setUserName(response.data.name);
+            } catch (error) {
+                console.error('Error al obtener los detalles del usuario:', error);
+            }
+        };
+
+        if (isAuthenticated && userId) {
+            fetchUserDetails();
+        }
+
         socket.on("connect", () => {
             console.log("Conexión establecida con el servidor de sockets");
         });
@@ -79,7 +92,7 @@ const Comentario: React.FC<ComentarioProps> = ({
             socket.off('comentario-agregado');
             console.log('Socket events cleanup');
         };
-    }, [blogId]);
+    }, [blogId, isAuthenticated, userId]);
 
     const handleEliminarComentario = async (commentId: string) => {
         try {
@@ -97,10 +110,6 @@ const Comentario: React.FC<ComentarioProps> = ({
         } catch (error) {
             console.error("Error al eliminar comentario:", error);
         }
-    };
-
-    const handleNombreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setUserName(event.target.value);
     };
 
     const handleComentarioChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -199,9 +208,10 @@ const Comentario: React.FC<ComentarioProps> = ({
                                 <Form.Control
                                     type="text"
                                     placeholder="Ingresa tu nombre"
-                                    value={userName}
-                                    onChange={handleNombreChange}
+                                    value={isAuthenticated ? userName : ''} 
+                                    onChange={handleComentarioChange}
                                     required
+                                    disabled={isAuthenticated}
                                 />
                             </Form.Group>
                             <Form.Group controlId="nuevoComentario">
